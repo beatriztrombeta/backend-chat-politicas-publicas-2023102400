@@ -1,0 +1,83 @@
+# Python cache
+# ---------------------------------------
+# Python
+# ---------------------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.egg
+*.egg-info/
+*.manifest
+*.spec
+build/
+dist/
+pip-wheel-metadata/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints
+
+# mypy, pytype, coverage e pytest
+.mypy_cache/
+.pytype/
+.coverage
+.cache/
+htmlcov/
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# ---------------------------------------
+# FastAPI / Uvicorn
+# ---------------------------------------
+*.log
+*.db
+*.sqlite3
+
+# ---------------------------------------
+# Docker
+# ---------------------------------------
+*.pid
+*.seed
+*.bak
+*.swp
+*.tmp
+*.old
+Dockerfile.*
+docker-compose.override.yml
+docker-compose.dev.yml
+
+# Volumes, configs locais, dados persistentes
+data/
+postgres_data/
+pgdata/
+
+# ---------------------------------------
+# VSCode / IDEs
+# ---------------------------------------
+.vscode/
+.idea/
+*.code-workspace
+
+# ---------------------------------------
+# Sistema
+# ---------------------------------------
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+~$*
