@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     SMTP_PORT: int
     SMTP_USER: str
     SMTP_PASS: str
+    EMAIL_FROM: str
+    DEBUG_EMAILS: bool = False
     GEMINI_API_KEY: str
 
     class Config:
