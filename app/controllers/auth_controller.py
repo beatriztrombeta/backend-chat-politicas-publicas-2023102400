@@ -1,9 +1,8 @@
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.database import get_db
 from app.models import User
 from app.utils.auth import generate_code, store_code, verify_code, create_jwt_token
-from app.utils.email_service import send_verification_email
+from app.utils.email_service import send_email
 
 def send_login_code(email: str, db: Session):
     user = db.query(User).filter(User.email == email).first()
@@ -11,7 +10,7 @@ def send_login_code(email: str, db: Session):
         raise HTTPException(status_code=404, detail="Usuário não encontrado.")
     code = generate_code()
     store_code(email, code)
-    send_verification_email(email, code)
+    send_email(email, "Seu código de verificação", f"Seu código é: {code}")
     return {"message": "Código enviado com sucesso."}
 
 def validate_login_code(email: str, code: str):
