@@ -1,7 +1,7 @@
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.models import User
-from app.utils.auth import generate_code, store_code, verify_code, create_jwt_token
+from app.utils.auth import generate_code, store_code, verify_code, create_jwt_token, register_failed_attempt, reset_attempts
 from app.utils.email_service import send_email
 
 def send_login_code(email: str, db: Session):
@@ -15,6 +15,8 @@ def send_login_code(email: str, db: Session):
 
 def validate_login_code(email: str, code: str):
     if not verify_code(email, code):
+        register_failed_attempt(email)
         raise HTTPException(status_code=401, detail="Código inválido ou expirado.")
+    reset_attempts(email)
     token = create_jwt_token(email)
     return {"access_token": token}
