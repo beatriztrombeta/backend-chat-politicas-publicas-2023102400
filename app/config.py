@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     EMAIL_FROM: str
     DEBUG_EMAILS: bool = False
     GEMINI_API_KEY: str
+    METABASE_SITE_URL: str
+    METABASE_SECRET_KEY: str
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 

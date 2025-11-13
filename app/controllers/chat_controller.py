@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from app.services.gemini_service import ask_gemini
-from app.services.report_service import get_report_by_question_id
+from app.services.report_service import generate_metabase_link
 
 def process_chat(question: str, db: Session):
     if not question or not question.strip():
@@ -20,9 +20,12 @@ def process_chat(question: str, db: Session):
     except ValueError:
         raise HTTPException(status_code=500, detail=f"Resposta inválida do Gemini: {answer}")
     
-    report = get_report_by_question_id(db, question_id)
-    
+    report_link = generate_metabase_link(question_id)
+
+    if not report_link:
+        raise HTTPException(status_code=404, detail=f"Nenhum dashboard encontrado para a pergunta {question_id}")
+
     return {
         "answer": answer,
-        "report_link": report.link if report else None
+        "report_link": report_link
     }
