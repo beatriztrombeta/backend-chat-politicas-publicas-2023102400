@@ -10,3 +10,4 @@ passlib[bcrypt]
 httpx
 pydantic-settings
 pytest
+PyJWT
