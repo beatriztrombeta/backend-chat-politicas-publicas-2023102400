@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: str
     METABASE_SITE_URL: str
     METABASE_SECRET_KEY: str
+    GROQ_API_KEY: str
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
