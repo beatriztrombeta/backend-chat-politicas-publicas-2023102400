@@ -10,11 +10,19 @@ class Settings(BaseSettings):
     SMTP_PASS: str
     EMAIL_FROM: str
     DEBUG_EMAILS: bool = False
-    GEMINI_API_KEY: str
     METABASE_SITE_URL: str
     METABASE_SECRET_KEY: str
     GROQ_API_KEY: str
+    ALLOWED_EMAIL_DOMAINS: str
+    FILES_PATH: str
+    DOCUMENTS_BASE_DIR: str | None = None
+    FRONTEND_URL: str
+    BACKEND_URL: str
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+
+    @property
+    def documents_base_dir(self) -> str:
+        return self.DOCUMENTS_BASE_DIR or self.FILES_PATH
 
 settings = Settings()
