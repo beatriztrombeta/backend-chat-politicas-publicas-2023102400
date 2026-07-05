@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   db:
     image: postgres:15
@@ -14,11 +12,15 @@ services:
       - ./data:/docker-entrypoint-initdb.d
       - ./csvdata:/csvdata
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user -d chatbotdb"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-      start_period: 5s
+      test:
+        [
+          "CMD-SHELL",
+          "PGPASSWORD=${DB_PASSWORD} pg_isready -U ${DB_USER} -d ${DB_NAME} && PGPASSWORD=${DB_PASSWORD} psql -U ${DB_USER} -d ${DB_NAME} -tAc \"SELECT 1 FROM import_status WHERE chave='seed_status' AND valor='done'\" | grep -q '^1$'"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 90
+      start_period: 900s
   web:
     build: .
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
@@ -29,6 +31,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    restart: unless-stopped
     env_file: .env
   metabase:
     image: metabase/metabase:latest
@@ -42,3 +45,4 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    restart: unless-stopped
