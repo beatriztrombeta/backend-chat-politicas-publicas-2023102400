@@ -2,7 +2,7 @@ import os
 import jwt
 import time
 from dotenv import load_dotenv
-from app.data.reports_list import REPORTS_MAP  # importa o mapa
+from app.data_usable.reports_list import REPORTS_MAP  # importa o mapa
 
 load_dotenv()
 

@@ -1,7 +1,7 @@
 import httpx
 import json
 from app.config import settings
-from app.data.questions_list import QUESTIONS_LIST
+from app.data_usable.questions_list import QUESTIONS_LIST
 
 
 def call_groq(messages, temperature=0, max_tokens=700):

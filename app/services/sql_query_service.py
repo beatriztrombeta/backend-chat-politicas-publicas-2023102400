@@ -1,7 +1,7 @@
 from sqlalchemy import text
 from decimal import Decimal
 from datetime import date, datetime
-from app.data.sql_queries import SQL_QUERIES
+from app.data_usable.sql_queries import SQL_QUERIES
 
 
 def serialize_value(value):
