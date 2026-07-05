@@ -27,8 +27,8 @@ def verify_code_endpoint(data: VerifyCode, response: Response, db: Session = Dep
         key="token",
         value=token,
         httponly=True,
-        secure=False,
-        samesite="Lax",
+        secure=True,
+        samesite="none",
         max_age=3600
     )
 
