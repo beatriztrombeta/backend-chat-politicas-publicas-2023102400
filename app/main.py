@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routes import router
 from app.database import Base, engine
 
-app = FastAPI(title="Chatbot")
+app = FastAPI(title="Chat de Políticas Públicas")
 
 Base.metadata.create_all(bind=engine)
 

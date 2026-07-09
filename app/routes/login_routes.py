@@ -39,7 +39,12 @@ def verify_code_endpoint(data: VerifyCode, response: Response, db: Session = Dep
 
 @router.post("/logout")
 def logout(response: Response):
-    response.delete_cookie("token")
+    response.delete_cookie(
+        key="token",
+        path="/",
+        secure=True,
+        samesite="none",
+    )
     return {"message": "Logout realizado com sucesso."}
 
 @router.get("/me")
