@@ -1,3 +1,4 @@
+import re
 import httpx
 import json
 from app.config import settings
@@ -66,7 +67,16 @@ Pergunta do usuário:
         max_tokens=10
     )
 
-    return int(answer)
+    match = re.search(r"\d+", answer)
+    if not match:
+        raise ValueError(f"Groq não retornou um número válido: {answer!r}")
+
+    number = int(match.group())
+
+    if not (1 <= number <= 50):
+        raise ValueError(f"Número fora do intervalo esperado (1-50): {number}")
+
+    return number
 
 
 def generate_natural_answer(user_question: str, question_id: int, sql_result: dict) -> str:
