@@ -311,10 +311,42 @@ FROM aluno a
 GROUP BY 1
 ORDER BY taxa_evasao_percentual DESC, tipo_ingresso;
     """,
-    32: """
+    32: """SELECT
+  width_bucket(avg_nota, 0, 10, 10) AS faixa_nota,
+  AVG(
+    CASE
+      WHEN situacao IN ('MATRICULADO', 'CONCLUIDO') THEN 1.0
+      ELSE 0.0
+    END
+  ) AS proporcao_permanencia,
+  COUNT(*) AS total_alunos
+FROM aluno
+WHERE avg_nota IS NOT NULL
+GROUP BY faixa_nota
+ORDER BY faixa_nota;
 SELECT
-  'NÃO SUPORTADA PELO SCHEMA ATUAL' AS status,
-  'ALUNO_DISCIPLINA não possui semestre/período da disciplina cursada pelo aluno' AS detalhe;
+  CASE
+    WHEN situacao IN ('MATRICULADO', 'CONCLUIDO') THEN 'Permaneceu'
+    ELSE 'Evadido'
+  END AS grupo,
+  COUNT(*) AS total_estudantes,
+  AVG(avg_nota) AS media_nota,
+  MAX(avg_nota) AS maior_nota,
+  STDDEV(avg_nota) AS desvio_padrao_nota
+FROM aluno
+WHERE avg_nota IS NOT NULL
+GROUP BY 1
+ORDER BY 1;
+SELECT
+    corr(
+        avg_nota::double precision,
+        CASE 
+            WHEN situacao IN ('MATRICULADO', 'CONCLUIDO') THEN 1.0
+            ELSE 0.0
+        END
+    ) AS correlacao
+FROM aluno
+WHERE avg_nota IS NOT NULL;
     """,
     33: """
 SELECT
