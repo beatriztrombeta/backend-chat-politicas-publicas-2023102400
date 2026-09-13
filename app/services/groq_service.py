@@ -15,7 +15,7 @@ def call_groq(messages, temperature=0, max_tokens=700):
     }
 
     payload = {
-        "model": "llama-3.1-8b-instant",
+        "model": "openai/gpt-oss-20b",
         "temperature": temperature,
         "top_p": 1,
         "max_completion_tokens": max_tokens,
