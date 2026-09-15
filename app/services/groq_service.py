@@ -5,9 +5,10 @@ from app.config import settings
 from app.data_usable.questions_list import QUESTIONS_LIST
 
 
-def call_groq(messages, temperature=0, max_tokens=700):
+def call_groq(messages, temperature=0, max_tokens=700, model=None, reasoning_effort=None):
     url = "https://api.groq.com/openai/v1/chat/completions"
 
+    model = model or settings.GROQ_MODEL
 
     headers = {
         "Content-Type": "application/json",
@@ -15,7 +16,7 @@ def call_groq(messages, temperature=0, max_tokens=700):
     }
 
     payload = {
-        "model": "openai/gpt-oss-20b",
+        "model": model,
         "temperature": temperature,
         "top_p": 1,
         "max_completion_tokens": max_tokens,
@@ -23,8 +24,21 @@ def call_groq(messages, temperature=0, max_tokens=700):
         "stream": False
     }
 
-    response = httpx.post(url, json=payload, headers=headers, timeout=60)
-    response.raise_for_status()
+    # Modelos da familia gpt-oss gastam tokens de raciocinio antes do conteudo;
+    # reasoning_effort baixo evita estourar o orcamento em respostas curtas.
+    if reasoning_effort and model.startswith("openai/gpt-oss"):
+        payload["reasoning_effort"] = reasoning_effort
+
+    try:
+        response = httpx.post(url, json=payload, headers=headers, timeout=60)
+        response.raise_for_status()
+    except httpx.HTTPStatusError as e:
+        body = e.response.text[:500]
+        raise RuntimeError(
+            f"Groq retornou {e.response.status_code} para o modelo {model!r}: {body}"
+        ) from e
+    except httpx.RequestError as e:
+        raise RuntimeError(f"Falha de rede ao chamar a Groq: {e}") from e
 
     data = response.json()
 
@@ -52,6 +66,8 @@ Pergunta do usuário:
 {question}
 """
 
+    model = settings.GROQ_CLASSIFIER_MODEL or settings.GROQ_MODEL
+
     answer = call_groq(
         messages=[
             {
@@ -64,12 +80,16 @@ Pergunta do usuário:
             }
         ],
         temperature=0,
-        max_tokens=10
+        max_tokens=512,
+        model=model,
+        reasoning_effort="low"
     )
 
     match = re.search(r"\d+", answer)
     if not match:
-        raise ValueError(f"Groq não retornou um número válido: {answer!r}")
+        raise ValueError(
+            f"Groq (modelo {model!r}) não retornou um número válido: {answer!r}"
+        )
 
     number = int(match.group())
 

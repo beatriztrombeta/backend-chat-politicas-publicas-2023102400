@@ -13,6 +13,8 @@ class Settings(BaseSettings):
     METABASE_SITE_URL: str
     METABASE_SECRET_KEY: str
     GROQ_API_KEY: str
+    GROQ_MODEL: str = "openai/gpt-oss-20b"
+    GROQ_CLASSIFIER_MODEL: str | None = None
     ALLOWED_EMAIL_DOMAINS: str
     FILES_PATH: str
     DOCUMENTS_BASE_DIR: str | None = None
